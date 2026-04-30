@@ -173,10 +173,9 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
-/postgresdata/
 # Pyre type checker
 .pyre/
-/postgresdata/
+/postgresdata
 # pytype static type analyzer
 .pytype/
 
