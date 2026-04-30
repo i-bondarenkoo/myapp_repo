@@ -1,0 +1,13 @@
+
+services:
+  pg:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: agregator_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      PGDATA: /var/lib/postgresql/data
+    ports:
+      - "5454:5432"
+    volumes:
+      - ./postgresdata:/var/lib/postgresql/data
