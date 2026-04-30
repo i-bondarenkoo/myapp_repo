@@ -1,11 +1,15 @@
 from app.models.base import Base
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 import uuid
 from sqlalchemy import UUID, String, DateTime, ForeignKey
 from datetime import datetime
 from enum import Enum
 from sqlalchemy import Enum as sql_alchEnum
 from sqlalchemy import func
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.models.place import Place
 
 
 class EventStatus(str, Enum):
@@ -48,3 +52,4 @@ class Event(Base):
         default=datetime.now,
         server_default=func.now(),
     )
+    place: Mapped["Place"] = relationship("Place", back_populates="events")

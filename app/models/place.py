@@ -2,8 +2,12 @@ from app.models.base import Base
 import uuid
 from sqlalchemy import UUID, String, DateTime
 from sqlalchemy import func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.models.event import Event
 
 
 class Place(Base):
@@ -27,3 +31,4 @@ class Place(Base):
         default=datetime.now,
         server_default=func.now(),
     )
+    events: Mapped[list["Event"]] = relationship("Event", back_populates="place")
