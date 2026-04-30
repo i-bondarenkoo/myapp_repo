@@ -1,6 +1,9 @@
 import asyncio
 from logging.config import fileConfig
 
+from app.models.base import Base
+from app import models  # noqa: F401
+from app.core.config import settings
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
@@ -20,9 +23,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from app.models.base import Base
-from app import models
-from app.core.config import settings
+
 
 target_metadata = Base.metadata
 config.set_main_option("sqlalchemy.url", value=settings.db_url)
