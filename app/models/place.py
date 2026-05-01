@@ -31,4 +31,8 @@ class Place(Base):
         default=datetime.now,
         server_default=func.now(),
     )
-    events: Mapped[list["Event"]] = relationship("Event", back_populates="place")
+    events: Mapped[list["Event"]] = relationship(
+        "Event",
+        back_populates="place",
+        cascade="all, delete-orphan",
+    )
