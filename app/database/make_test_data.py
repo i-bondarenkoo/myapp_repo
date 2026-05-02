@@ -2,7 +2,6 @@ import asyncio
 from app.database.db_constructor import db_constructor
 from app.models.event import Event, EventStatus
 from app.models.place import Place
-import uuid
 from datetime import datetime
 
 

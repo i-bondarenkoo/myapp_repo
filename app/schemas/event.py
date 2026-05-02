@@ -15,3 +15,10 @@ class ResponseEventsWithPlaces(BaseModel):
     number_of_visitors: int
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class ResponseOutAPIWithPlaces(BaseModel):
+    count: int
+    next: str | None
+    previous: str | None
+    results: list[ResponseEventsWithPlaces]
