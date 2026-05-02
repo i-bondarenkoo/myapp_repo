@@ -9,3 +9,13 @@ class ResponsePlaces(BaseModel):
     address: str
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class ResponsePlacesModel(BaseModel):
+    id: uuid.UUID
+    name: str
+    city: str
+    address: str
+    seats_pattern: str
+
+    model_config = ConfigDict(from_attributes=True)

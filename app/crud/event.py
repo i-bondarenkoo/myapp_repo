@@ -2,10 +2,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from datetime import datetime
 from app.models.event import Event
-from sqlalchemy import select, Result, text
+from sqlalchemy import select, Result
 from sqlalchemy.orm import joinedload
 from sqlalchemy.sql import func
-from fastapi import Request
+import uuid
 
 
 async def get_events_crud(
@@ -48,3 +48,13 @@ async def make_response_data(
     else:
         previous = f"https://127.0.0.1/api/events/?page={page-1}"
     return (count_row, next, previous)
+
+
+async def get_events_by_id_crud(
+    event_id: uuid.UUID,
+    session: AsyncSession,
+):
+    stmt = select(Event).where(Event.id == event_id).options(joinedload(Event.place))
+    result: Result = await session.execute(stmt)
+    event_by_id = result.scalars().one_or_none()
+    return event_by_id
