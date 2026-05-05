@@ -7,10 +7,12 @@ from app.services.event_provider import EventsProviderClient
 from app.services.sync import sync_events
 from app.views.helpers import get_http_session
 
-router = APIRouter()
+router = APIRouter(
+    tags=["Sync Data"],
+)
 
 
-@router.post("/sync/trigger/")
+@router.post("/api/sync/trigger/")
 async def sync_trigger(
     session: AsyncSession = Depends(db_constructor.get_session),
     http_session=Depends(get_http_session),
