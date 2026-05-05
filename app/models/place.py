@@ -20,7 +20,7 @@ class Place(Base):
     name: Mapped[str]
     city: Mapped[str]
     address: Mapped[str]
-    seats_pattern: Mapped[str]
+    seats_pattern: Mapped[str | None]
     changed_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=datetime.now,

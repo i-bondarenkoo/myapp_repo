@@ -9,6 +9,8 @@ class Settings(BaseSettings):
     )
     db_url: str
     db_echo: bool = False
+    events_api_key: str
+    events_base_url: str
 
 
 settings = Settings()
