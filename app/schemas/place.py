@@ -16,6 +16,6 @@ class ResponsePlacesModel(BaseModel):
     name: str
     city: str
     address: str
-    seats_pattern: str
+    seats_pattern: str | None
 
     model_config = ConfigDict(from_attributes=True)
