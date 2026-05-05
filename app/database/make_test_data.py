@@ -1,7 +1,7 @@
 import asyncio
 from app.database.db_constructor import db_constructor
-from app.models.event import Event, EventStatus
 from app.models.place import Place
+from app.models.event import Event
 from datetime import datetime
 
 
@@ -20,7 +20,7 @@ async def main():
             name="Тестовое событие 1",
             event_time=datetime.now(),
             registration_deadline=datetime.now(),
-            status=EventStatus.published,
+            status="published",
             number_of_visitors=3,
         )
         session.add(event1)

@@ -7,8 +7,6 @@ from app.crud import event
 from app.schemas.event import ResponseOutAPIWithPlaces, ResponseEventWithPlaceById
 import uuid
 
-from app.models.event import EventStatus
-
 router = APIRouter(
     tags=["Events"],
     prefix="/api",

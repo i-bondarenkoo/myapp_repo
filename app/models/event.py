@@ -3,19 +3,11 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 import uuid
 from sqlalchemy import UUID, String, DateTime, ForeignKey
 from datetime import datetime
-from enum import Enum
-from sqlalchemy import Enum as sql_alchEnum
 from sqlalchemy import func
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from app.models.place import Place
-
-
-class EventStatus(str, Enum):
-    new = "new"
-    published = "published"
-    deprecated = "deprecated"
 
 
 class Event(Base):
@@ -35,7 +27,7 @@ class Event(Base):
     registration_deadline: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
     )
-    status: Mapped[EventStatus] = mapped_column(sql_alchEnum(EventStatus))
+    status: Mapped[str]
     number_of_visitors: Mapped[int] = mapped_column(default=0)
     changed_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

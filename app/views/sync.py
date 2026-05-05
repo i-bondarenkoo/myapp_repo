@@ -32,6 +32,7 @@ async def sync_trigger(
     }
 
 
+# пример ответа внешнего апи
 {
     "count": 150,
     "next": "http://{hostname}/api/events/?page=2",
