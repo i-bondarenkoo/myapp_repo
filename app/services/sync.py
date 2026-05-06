@@ -1,11 +1,13 @@
 from datetime import datetime
 from app.services.event_provider import EventsProviderClient
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from app.services.dependencies import get_sync_meta_obj, update_sync_meta_obj
 from app.models.event import Event
 from app.models.place import Place
-from sqlalchemy import select
-import uuid
+from app.models.sync_meta_table import SyncMetaTable
+from app.services.dependencies import check_place, check_event
+
+# from sqlalchemy import select
 
 
 async def sync_events(
@@ -14,6 +16,7 @@ async def sync_events(
     changed_at: str = "2020-01-01",
 ):
     data = await client.get_events(changed_at=changed_at)
+
     events: dict = data.get("results", [])
     unique_places: dict = {}
     for item in events:
@@ -54,19 +57,34 @@ async def sync_events(
     return len(events)
 
 
-async def check_place(
+async def run_auto_sync(
     session: AsyncSession,
-    place_id: uuid.UUID,
+    client: EventsProviderClient,
 ):
-    stmt = select(Place.id).where(Place.id == place_id)
-    result = await session.execute(stmt)
-    return result.scalars().one_or_none()
+    meta = await get_sync_meta_obj(session=session)
 
+    if meta is None:
+        changed_at = "2020-01-01"
+    else:
+        changed_at = meta.last_changed_at
 
-async def check_event(
-    session: AsyncSession,
-    event_id: uuid.UUID,
-):
-    stmt = select(Event.id).where(Event.id == event_id)
-    result = await session.execute(stmt)
-    return result.scalars().one_or_none()
+    data = await sync_events(
+        client=client,
+        session=session,
+        changed_at=changed_at,
+    )
+    # upd meta
+    if meta:
+        update_meta = await update_sync_meta_obj(
+            sync_meta_obj=meta,
+            session=session,
+        )
+    else:
+        meta = SyncMetaTable(
+            last_changed_at=datetime.now(),
+            last_sync_time=datetime.now(),
+            status="sync",
+        )
+        session.add(meta)
+        await session.commit()
+    return data
