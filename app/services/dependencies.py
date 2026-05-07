@@ -34,7 +34,7 @@ async def check_place(
     session: AsyncSession,
     place_id: uuid.UUID,
 ):
-    stmt = select(Place.id).where(Place.id == place_id)
+    stmt = select(Place).where(Place.id == place_id)
     result = await session.execute(stmt)
     return result.scalars().one_or_none()
 
@@ -43,6 +43,6 @@ async def check_event(
     session: AsyncSession,
     event_id: uuid.UUID,
 ):
-    stmt = select(Event.id).where(Event.id == event_id)
+    stmt = select(Event).where(Event.id == event_id)
     result = await session.execute(stmt)
     return result.scalars().one_or_none()

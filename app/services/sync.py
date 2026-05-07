@@ -17,7 +17,7 @@ async def sync_events(
 ):
     data = await client.get_events(changed_at=changed_at)
 
-    events: dict = data.get("results", [])
+    events: list[dict] = data.get("results", [])
     unique_places: dict = {}
     for item in events:
         place_data = item.get("place")
@@ -35,6 +35,10 @@ async def sync_events(
                 address=place_data["address"],
             )
             session.add(place_orm)
+        else:
+            place_db.name = place_data["name"]
+            place_db.city = place_data["city"]
+            place_db.address = place_data["address"]
     for item in events:
         place_data = item.get("place")
         event_id = item["id"]
@@ -52,6 +56,14 @@ async def sync_events(
                 place_id=place_data["id"],
             )
             session.add(event_orm)
+        else:
+            event_db.name = item["name"]
+            event_db.status = item["status"]
+            event_db.event_time = datetime.fromisoformat(item["event_time"])
+            event_db.registration_deadline = datetime.fromisoformat(
+                item["registration_deadline"]
+            )
+            event_db.number_of_visitors = item["number_of_visitors"]
 
     await session.commit()
     return len(events)
@@ -66,7 +78,7 @@ async def run_auto_sync(
     if meta is None:
         changed_at = "2020-01-01"
     else:
-        changed_at = meta.last_changed_at
+        changed_at = meta.last_changed_at.isoformat()
 
     data = await sync_events(
         client=client,
@@ -75,7 +87,7 @@ async def run_auto_sync(
     )
     # upd meta
     if meta:
-        update_meta = await update_sync_meta_obj(
+        await update_sync_meta_obj(
             sync_meta_obj=meta,
             session=session,
         )

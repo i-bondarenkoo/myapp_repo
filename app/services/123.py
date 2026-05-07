@@ -2,7 +2,7 @@ import asyncio
 from app.services.sync import run_auto_sync
 from app.database.db_constructor import db_constructor
 
-# from app.views.helpers import get_http_session
+
 from app.services.event_provider import EventsProviderClient
 
 
