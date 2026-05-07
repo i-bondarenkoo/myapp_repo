@@ -33,3 +33,10 @@ class ResponseEventWithPlaceById(BaseModel):
     registration_deadline: datetime
     status: str
     number_of_visitors: int
+
+
+class ResponseEventByIdAndSeats(BaseModel):
+    event_id: uuid.UUID
+    available_seats: list[str]
+
+    model_config = ConfigDict(from_attributes=True)

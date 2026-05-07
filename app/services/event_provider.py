@@ -1,5 +1,6 @@
 import aiohttp
 from app.core.config import settings
+import uuid
 
 # http://events-provider.dev-2.python-labs.ru
 
@@ -28,4 +29,15 @@ class EventsProviderClient:
             headers={"x-api-key": self.api_key},
         ) as response:
 
+            return await response.json()
+
+    async def get_events_and_seats(
+        self,
+        event_id: uuid.UUID,
+    ):
+        url = f"{self.base_url}/api/events/{event_id}/seats/"
+        async with self.session.get(
+            url=url,
+            headers={"x-api-key": self.api_key},
+        ) as response:
             return await response.json()

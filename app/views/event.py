@@ -4,8 +4,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.db_constructor import db_constructor
 from typing import Annotated
 from app.crud import event
+from app.services.event_provider import EventsProviderClient
 from app.schemas.event import ResponseOutAPIWithPlaces, ResponseEventWithPlaceById
 import uuid
+import aiohttp
+from app.schemas.event import ResponseEventByIdAndSeats
+from app.services.event_request import get_seats_cached
+from app.views.helpers import get_http_session
 
 router = APIRouter(
     tags=["Events"],
@@ -52,3 +57,16 @@ async def get_events_by_id(
             detail="Событие не найдено",
         )
     return event_by_id
+
+
+@router.get("/events/{event_id}/seats/", response_model=ResponseEventByIdAndSeats)
+async def get_info_about_seats(
+    event_id: Annotated[uuid.UUID, Path(description="UUID события")],
+    http_session: aiohttp.ClientSession = Depends(get_http_session),
+):
+    client = EventsProviderClient(http_session)
+    result = await get_seats_cached(
+        event_id=event_id,
+        client=client,
+    )
+    return result
