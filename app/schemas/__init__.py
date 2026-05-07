@@ -5,6 +5,8 @@ __all__ = (
     "ResponsePlacesModel",
     "ResponseEventWithPlaceById",
     "ResponseEventByIdAndSeats",
+    "RegisterOnEvent",
+    "ResponseForRegisterOnEvent",
 )
 from app.schemas.place import ResponsePlaces, ResponsePlacesModel
 from app.schemas.event import (
@@ -12,6 +14,8 @@ from app.schemas.event import (
     ResponseOutAPIWithPlaces,
     ResponseEventWithPlaceById,
     ResponseEventByIdAndSeats,
+    RegisterOnEvent,
+    ResponseForRegisterOnEvent,
 )
 
 ResponseEventsWithPlaces.model_rebuild()

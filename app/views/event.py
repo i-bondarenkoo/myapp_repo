@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Query, Depends, Path, HTTPException, status
+from fastapi import APIRouter, Query, Depends, Path, HTTPException, status, Body
 from datetime import datetime
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.db_constructor import db_constructor
@@ -8,7 +8,11 @@ from app.services.event_provider import EventsProviderClient
 from app.schemas.event import ResponseOutAPIWithPlaces, ResponseEventWithPlaceById
 import uuid
 import aiohttp
-from app.schemas.event import ResponseEventByIdAndSeats
+from app.schemas.event import (
+    ResponseEventByIdAndSeats,
+    RegisterOnEvent,
+    ResponseForRegisterOnEvent,
+)
 from app.services.event_request import get_seats_cached
 from app.views.helpers import get_http_session
 
@@ -70,3 +74,14 @@ async def get_info_about_seats(
         client=client,
     )
     return result
+
+
+@router.post("/events/{event_id}/register/", response_model=ResponseForRegisterOnEvent)
+async def register_on_event(
+    event_id: Annotated[uuid.UUID, Path(description="UUID события")],
+    data_in: Annotated[RegisterOnEvent, Body(description="Данные для запроса в API")],
+    http_session: aiohttp.ClientSession = Depends(get_http_session),
+):
+    client = EventsProviderClient(http_session)
+    register_event = await client.register_on_events(event_id=event_id, data_in=data_in)
+    return register_event

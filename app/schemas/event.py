@@ -1,5 +1,5 @@
 import uuid
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, EmailStr
 from app.schemas.place import ResponsePlaces, ResponsePlacesModel
 from datetime import datetime
 
@@ -40,3 +40,15 @@ class ResponseEventByIdAndSeats(BaseModel):
     available_seats: list[str]
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class RegisterOnEvent(BaseModel):
+    # event_id: uuid.UUID
+    first_name: str
+    last_name: str
+    email: EmailStr
+    seat: str
+
+
+class ResponseForRegisterOnEvent(BaseModel):
+    ticked_id: uuid.UUID
