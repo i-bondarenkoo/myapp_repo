@@ -95,7 +95,7 @@ async def register_on_event(
         event_id=event_id,
         ticket_id=ticket_id,
     )
-    new_ticket = await create_ticket(data_in=ticket_data, session=session)
+    await create_ticket(data_in=ticket_data, session=session)
 
     return ResponseForRegisterOnEvent(ticked_id=ticket_id)
 

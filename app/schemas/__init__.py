@@ -7,6 +7,7 @@ __all__ = (
     "ResponseEventByIdAndSeats",
     "RegisterOnEvent",
     "ResponseForRegisterOnEvent",
+    "CreateTicket",
 )
 from app.schemas.place import ResponsePlaces, ResponsePlacesModel
 from app.schemas.event import (

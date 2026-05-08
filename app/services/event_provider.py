@@ -106,10 +106,4 @@ class EventsProviderClient:
             headers={"x-api-key": self.api_key},
         ) as response:
 
-            text = await response.text()
-
-            if response.status != 200:
-                raise Exception(f"Provider error: {text}")
-
-            else:
-                return await response.json()
+            return await response.json()
