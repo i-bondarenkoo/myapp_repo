@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.db_constructor import db_constructor
 from typing import Annotated
 from app.crud import event
+from app.schemas.ticket import CreateTicket
 from app.services.event_provider import EventsProviderClient
 from app.schemas.event import ResponseOutAPIWithPlaces, ResponseEventWithPlaceById
 import uuid
@@ -12,6 +13,11 @@ from app.schemas.event import (
     ResponseEventByIdAndSeats,
     RegisterOnEvent,
     ResponseForRegisterOnEvent,
+)
+from app.crud.ticket import (
+    create_ticket,
+    get_data_by_ticket_id_crud,
+    delete_ticket_crud,
 )
 from app.services.event_request import get_seats_cached
 from app.views.helpers import get_http_session
@@ -81,7 +87,38 @@ async def register_on_event(
     event_id: Annotated[uuid.UUID, Path(description="UUID события")],
     data_in: Annotated[RegisterOnEvent, Body(description="Данные для запроса в API")],
     http_session: aiohttp.ClientSession = Depends(get_http_session),
+    session: AsyncSession = Depends(db_constructor.get_session),
 ):
     client = EventsProviderClient(http_session)
-    register_event = await client.register_on_events(event_id=event_id, data_in=data_in)
-    return register_event
+    ticket_id = await client.register_on_events(event_id=event_id, data_in=data_in)
+    ticket_data: CreateTicket = CreateTicket(
+        event_id=event_id,
+        ticket_id=ticket_id,
+    )
+    new_ticket = await create_ticket(data_in=ticket_data, session=session)
+
+    return ResponseForRegisterOnEvent(ticked_id=ticket_id)
+
+
+@router.delete("/tickets/{ticket_id}/")
+async def cancel_register(
+    ticket_id: Annotated[uuid.UUID, Path()],
+    session: AsyncSession = Depends(db_constructor.get_session),
+    http_session: aiohttp.ClientSession = Depends(get_http_session),
+):
+    client = EventsProviderClient(http_session)
+    orm_obj = await get_data_by_ticket_id_crud(ticket_id=ticket_id, session=session)
+    if orm_obj is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Билет не найден",
+        )
+    query = await client.cancel_register_on_event(
+        event_id=orm_obj.event_id,
+        ticket_id=orm_obj.ticket_id,
+    )
+    if query.get("success"):
+        await delete_ticket_crud(session=session, ticket_id=ticket_id)
+        return query
+    else:
+        return query
