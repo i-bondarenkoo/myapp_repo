@@ -119,6 +119,4 @@ async def cancel_register(
     )
     if query.get("success"):
         await delete_ticket_crud(session=session, ticket_id=ticket_id)
-        return query
-    else:
-        return query
+    return query
