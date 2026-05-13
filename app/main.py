@@ -31,6 +31,6 @@ app.include_router(event_router)
 app.include_router(sync_router)
 
 
-@app.get("/health")
-async def health():
-    return {"status": "ok"}
+@app.get("/{full_path:path}")
+async def custom_path(full_path: str):
+    return f"Hello from LMS!\nPath: /{full_path}"
