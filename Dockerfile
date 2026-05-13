@@ -21,6 +21,6 @@ RUN pip install uv \
 
 COPY . .
 
-RUN pip install sqlalchemy fastapi uvicorn aiohttp
+RUN pip install sqlalchemy fastapi uvicorn aiohttp alembic asyncpg email-validator pydantic pydantic-settings
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
