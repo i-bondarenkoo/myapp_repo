@@ -21,6 +21,6 @@ RUN pip install uv \
 
 COPY . .
 
-RUN pip install fastapi uvicorn
+RUN pip install sqlalchemy fastapi uvicorn aiohttp
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
